@@ -72,9 +72,36 @@ if ($path_valid && isset($_POST['submit'])) {
                 </div>
                 <?php
             }
-
+            
             if ($scan_result) {
-                print_r($scan_result);
+                ?>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Path</th>
+                        <th scope="col">Size (kb)</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Signatures Found</th>
+                        <th scope="col">Processing Time (ms)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+                        foreach ($scan_result as $row) {
+                            ?>
+                            <tr>
+                                <td scope="row"><?= $row->path; ?></td>
+                                <td><?= $row->size; ?></td>
+                                <td><?= $row->status; ?></td>
+                                <td><?= implode(',', $row->signatures_found); ?></td>
+                                <td><?= $row->signatures_check_time; ?></td>
+                            </tr>
+                            <?php
+                        }
+                    ?>
+                    </tbody>
+                </table>
+                <?php
             }
         ?>
     </div>

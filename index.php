@@ -6,6 +6,7 @@ require_once 'classes/SigmxScanner.php';
 $path_empty = false;
 $path_valid = true;
 $scan_result = false;
+$signatures_result = SigmxScanner::getAllSignatureResult();
 
 /**
  * Stage: 1
@@ -98,6 +99,31 @@ if ($path_valid && isset($_POST['submit'])) {
                             </tr>
                             <?php
                         }
+                    ?>
+                    </tbody>
+                </table>
+                <?php
+            }
+            
+            if ($signatures_result) {
+                ?>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Working Time</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                    foreach ($signatures_result as $name => $time) {
+                        ?>
+                        <tr>
+                            <td><?= $name; ?></td>
+                            <td><?= $time['working_time']; ?></td>
+                        </tr>
+                        <?php
+                    }
                     ?>
                     </tbody>
                 </table>

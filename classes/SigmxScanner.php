@@ -36,6 +36,7 @@ class SigmxScanner
         require_once( $_SERVER['DOCUMENT_ROOT'] . '/wp-load.php' );
         require_once 'SigmxFileResult.php';
         require_once 'SigmxCSV.php';
+        require_once 'SigmxSignaturesResultRepository.php';
         $root = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR;
         $path = trim($path, '/');
         $path = $root . $path;
@@ -55,6 +56,7 @@ class SigmxScanner
         if ($this->files) {
             $file_csv_name = date('Y-m-d-H-i-s');
             $checking_results = [];
+            SigmxSignaturesResultRepository::clearAllSignatureResult();
             
             foreach ($this->files as $file) {
                 $checking_results[] = $this->scanFile($file);
@@ -98,16 +100,20 @@ class SigmxScanner
         $file_result->size = $filesize;
 
         $file_content = file_get_contents($file);
+    
+        $all_signature_result = SigmxSignaturesResultRepository::getAllSignatureResult();
 
         // start time
-        $checking_time_start = microtime(true);
+        $checking_time_start = hrtime(true);
 
         foreach ($this->signatures as $signature) {
             $is_regexp = sigmx__is_regexp($signature->body);
-
+    
+            $signature_time_start = hrtime(true);
+            
             if ($is_regexp && preg_match($signature->body, $file_content)) {
                 // signature found by regexp
-                $file_result->updateSignaturesFound($signature->id);
+                $file_result->updateSignaturesFound($signature->name);
             } elseif (
                 ! $is_regexp &&
                 (
@@ -116,14 +122,34 @@ class SigmxScanner
                 )
             ) {
                 // signature found by string
-                $file_result->updateSignaturesFound($signature->id);
+                $file_result->updateSignaturesFound($signature->name);
             }
+    
+            $signature_time_end = hrtime(true);
+            $signature_working_time = $signature_time_end - $signature_time_start;
+            $prev_working_time = isset($all_signature_result[$signature->name]['working_time']) ? 
+                $all_signature_result[$signature->name]['working_time'] + $signature_working_time :
+                $signature_working_time;
+
+            $all_signature_result[$signature->name] = [
+                'working_time' => $prev_working_time
+            ];
         }
 
         //end time
-        $checking_time_end = microtime(true);
+        $checking_time_end = hrtime(true);
         $file_result->setCheckingTime($checking_time_start, $checking_time_end);
+    
+        SigmxSignaturesResultRepository::setAllSignatureResult($all_signature_result);
 
         return $file_result;
+    }
+    
+    public static function getAllSignatureResult()
+    {
+        require_once( $_SERVER['DOCUMENT_ROOT'] . '/wp-load.php' );
+        require_once 'SigmxSignaturesResultRepository.php';
+
+        return SigmxSignaturesResultRepository::getAllSignatureResult();
     }
 }

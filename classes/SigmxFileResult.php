@@ -26,14 +26,14 @@ class SigmxFileResult
         $this->error = $error;
     }
     
-    public function updateSignaturesFound($id)
+    public function updateSignaturesFound($name)
     {
-        $this->signatures_found[] = $id;
+        $this->signatures_found[] = $name;
     }
     
     public function setCheckingTime($start, $end)
     {
-        $this->signatures_check_time = floor($end * 1000) - floor($start * 1000);
+        $this->signatures_check_time = $end - $start;
     }
     
     public function toArray(): array

@@ -104,12 +104,12 @@ class SigmxScanner
         $all_signature_result = SigmxSignaturesResultRepository::getAllSignatureResult();
 
         // start time
-        $checking_time_start = hrtime(true);
+        $checking_time_start = microtime(true);
 
         foreach ($this->signatures as $signature) {
             $is_regexp = sigmx__is_regexp($signature->body);
     
-            $signature_time_start = hrtime(true);
+            $signature_time_start = microtime(true);
             
             if ($is_regexp && preg_match($signature->body, $file_content)) {
                 // signature found by regexp
@@ -125,19 +125,19 @@ class SigmxScanner
                 $file_result->updateSignaturesFound($signature->name);
             }
     
-            $signature_time_end = hrtime(true);
+            $signature_time_end = microtime(true);
             $signature_working_time = $signature_time_end - $signature_time_start;
             $prev_working_time = isset($all_signature_result[$signature->name]['working_time']) ? 
                 $all_signature_result[$signature->name]['working_time'] + $signature_working_time :
                 $signature_working_time;
 
             $all_signature_result[$signature->name] = [
-                'working_time' => $prev_working_time
+                'working_time' => round($prev_working_time, 4)
             ];
         }
 
         //end time
-        $checking_time_end = hrtime(true);
+        $checking_time_end = microtime(true);
         $file_result->setCheckingTime($checking_time_start, $checking_time_end);
     
         SigmxSignaturesResultRepository::setAllSignatureResult($all_signature_result);

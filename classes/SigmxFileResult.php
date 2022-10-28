@@ -6,7 +6,7 @@ class SigmxFileResult
     public int $size;
     public string $status;
     public array $signatures_found;
-    public int $signatures_check_time;
+    public float $signatures_check_time;
     public string $error;
     
     public function __construct(
@@ -33,7 +33,7 @@ class SigmxFileResult
     
     public function setCheckingTime($start, $end)
     {
-        $this->signatures_check_time = $end - $start;
+        $this->signatures_check_time = (string)round($end - $start, 4);
     }
     
     public function toArray(): array

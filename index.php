@@ -6,7 +6,6 @@ require_once 'classes/SigmxScanner.php';
 $path_empty = false;
 $path_valid = true;
 $scan_result = false;
-$signatures_result = SigmxScanner::getAllSignatureResult();
 
 /**
  * Stage: 1
@@ -32,6 +31,8 @@ if ($path_valid && isset($_POST['submit'])) {
     $sigmx_scanner = new SigmxScanner($_POST['path']);
     $scan_result = $sigmx_scanner->getResult();
 }
+
+$signatures_result = SigmxScanner::getAllSignatureResult();
 
 ?>
 <!doctype html>

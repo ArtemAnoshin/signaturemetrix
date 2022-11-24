@@ -33,12 +33,12 @@ class SigmxScanner
     public function __construct(string $path)
     {
         define('SHORTINIT', true);
-        require_once( $_SERVER['DOCUMENT_ROOT'] . '/wp-load.php' );
+        require_once( WP_ROOT_PATH . '/wp-load.php' );
         require_once 'SigmxFileResult.php';
         //require_once 'SigmxCSV.php';
         require_once 'SigmxJSON.php';
         require_once 'SigmxSignaturesResultRepository.php';
-        $root = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR;
+        $root = WP_ROOT_PATH . DIRECTORY_SEPARATOR;
         $path = trim($path, '/');
         $path = $root . $path;
         
@@ -160,7 +160,7 @@ class SigmxScanner
     
     public static function getAllSignatureResult()
     {
-        require_once( $_SERVER['DOCUMENT_ROOT'] . '/wp-load.php' );
+        require_once( WP_ROOT_PATH . '/wp-load.php' );
         require_once 'SigmxSignaturesResultRepository.php';
 
         return SigmxSignaturesResultRepository::getAllSignatureResult();

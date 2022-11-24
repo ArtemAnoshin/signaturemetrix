@@ -6,6 +6,8 @@ require_once 'classes/SigmxScanner.php';
 $path_empty = false;
 $path_valid = true;
 $scan_result = false;
+const SIGMX_ROOT_PATH = __DIR__;
+define('WP_ROOT_PATH', dirname(SIGMX_ROOT_PATH));
 
 /**
  * Stage: 1

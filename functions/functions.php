@@ -6,7 +6,7 @@
  */
 function sigmx__path_validation($path) : bool
 {
-    $root = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR;
+    $root = WP_ROOT_PATH . DIRECTORY_SEPARATOR;
     $path = trim($path, '/');
     
     if (is_dir($root . $path) || file_exists($root . $path)) {

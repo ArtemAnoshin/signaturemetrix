@@ -8,7 +8,7 @@ class SigmxCSV
     public function __construct(array $data, string $file)
     {
         $this->data = $data;
-        $this->filename = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'signature-metrix/reports/' . $file . '.csv';
+        $this->filename = SIGMX_ROOT_PATH . '/reports/' . $file . '.csv';
     }
     
     public function add()

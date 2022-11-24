@@ -14,7 +14,7 @@ class SigmxJSON {
     {
         $this->data = $checking_results;
         $this->count_files = $count_files;
-        $this->filename = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'signature-metrix/reports/' . $report_file_name . '.json';
+        $this->filename = SIGMX_ROOT_PATH . '/reports/' . $report_file_name . '.json';
     }
 
     public function add()

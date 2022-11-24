@@ -92,11 +92,11 @@ $signatures_result = SigmxScanner::getAllSignatureResult();
                         foreach ($scan_result as $row) {
                             ?>
                             <tr>
-                                <td scope="row"><?= $row->path; ?></td>
-                                <td><?= $row->size; ?></td>
-                                <td><?= $row->status; ?></td>
-                                <td><?= implode(',', $row->signatures_found); ?></td>
-                                <td><?= $row->signatures_check_time; ?></td>
+                                <td scope="row"><?= $row['path']; ?></td>
+                                <td><?= $row['size']; ?></td>
+                                <td><?= $row['status']; ?></td>
+                                <td><?= $row['signatures_found']; ?></td>
+                                <td><?= $row['signatures_check_time']; ?></td>
                             </tr>
                             <?php
                         }

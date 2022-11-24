@@ -35,7 +35,8 @@ class SigmxScanner
         define('SHORTINIT', true);
         require_once( $_SERVER['DOCUMENT_ROOT'] . '/wp-load.php' );
         require_once 'SigmxFileResult.php';
-        require_once 'SigmxCSV.php';
+        //require_once 'SigmxCSV.php';
+        require_once 'SigmxJSON.php';
         require_once 'SigmxSignaturesResultRepository.php';
         $root = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR;
         $path = trim($path, '/');
@@ -48,13 +49,16 @@ class SigmxScanner
         $this->signatures = $this->db->get_results("SELECT * FROM {$wpdb->base_prefix}spbc_scan_signatures WHERE type='CODE_PHP'");
         if (is_dir($this->path)) {
             $this->files = sigmx__get_files($this->path);
+            $this->saveCountFiles(count($this->files));
         }
     }
     
     public function getResult()
     {
         if ($this->files) {
-            $file_csv_name = date('Y-m-d-H-i-s');
+            $report_files_file_name = 'files-working-time-' . date('YmdHis');
+            $report_signatures_file_name = 'signatures-working-time-' . date('YmdHis');
+            $count_files = $this->getCountFiles();
             $checking_results = [];
             SigmxSignaturesResultRepository::clearAllSignatureResult();
             
@@ -63,16 +67,25 @@ class SigmxScanner
             }
 
             // Save result to csv
-            $csv = new SigmxCSV($checking_results, $file_csv_name);
-            $csv->add();
-            
+            //$csv = new SigmxCSV($checking_results, $report_file_name);
+            //$csv->add();
+
+            // Save files results to JSON
+            $files_to_json = new SigmxJSON($checking_results, $count_files, $report_files_file_name);
+            $files_to_json->add();
+
+            // Save signatures results to JSON
+            $all_signature_result = SigmxSignaturesResultRepository::getAllSignatureResult();
+            $signatures_json = new SigmxJSON($all_signature_result, $count_files, $report_signatures_file_name);
+            $signatures_json->add();
+
             return $checking_results;
         }
         
         return false;
     }
     
-    public function scanFile($file): SigmxFileResult
+    public function scanFile($file): array
     {
         $file_result = new SigmxFileResult(
             $file,
@@ -139,10 +152,10 @@ class SigmxScanner
         //end time
         $checking_time_end = microtime(true);
         $file_result->setCheckingTime($checking_time_start, $checking_time_end);
-    
+        
         SigmxSignaturesResultRepository::setAllSignatureResult($all_signature_result);
 
-        return $file_result;
+        return $file_result->toArray();
     }
     
     public static function getAllSignatureResult()
@@ -151,5 +164,13 @@ class SigmxScanner
         require_once 'SigmxSignaturesResultRepository.php';
 
         return SigmxSignaturesResultRepository::getAllSignatureResult();
+    }
+
+    private function saveCountFiles(int $count) {
+        update_option('sigmx__count_files', $count);
+    }
+
+    private function getCountFiles() {
+        return get_option('sigmx__count_files');
     }
 }

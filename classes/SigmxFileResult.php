@@ -39,12 +39,12 @@ class SigmxFileResult
     public function toArray(): array
     {
         return [
-            $this->path,
-            (string)$this->size,
-            $this->status,
-            implode(',', $this->signatures_found),
-            (string)$this->signatures_check_time,
-            $this->error            
+            'path' => $this->path,
+            'size' => (string)$this->size,
+            'status' => $this->status,
+            'signatures_found' => implode(',', $this->signatures_found),
+            'signatures_check_time' => (string)$this->signatures_check_time,
+            'error' => $this->error            
         ];
     }
 }
